@@ -15,10 +15,6 @@ print(s.find('123'))
 print(s.index('123'))
 print()
 
-
-#   Primary function:
-#       re.search(<regex>, <string>)
-#   returns match object, or None
 print(re.search('123', s))
 
 #   Match objects are truthy:
@@ -67,9 +63,12 @@ print()
 #   Returns a tuple containing all the captured groups from a regex match.
 m = re.search('(\w+),(\w+),(\w+)', 'foo,quux,baz')
 print(m)
+#   All results
 print(m.groups())
+#   All spans (match locations)
 loop_span = [m.span(i) for i in range(1, len(m.groups())+1)]
 print(loop_span)
+#   itterate over matches
 for loop_group in m.groups():
     print(loop_group)
 print()
