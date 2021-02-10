@@ -2,6 +2,10 @@
 #   vim: set tabstop=4 modeline modelines=10 foldmethod=marker:
 #   vim: set foldlevel=2 foldcolumn=3:
 #   }}}1
+import functools
+import operator
+import itertools
+import math
 import re
 #   {{{2
 
@@ -19,22 +23,17 @@ import re
 
 def func_square(number):
     return number ** 2
-
 #   get squares of x as y 
 x = range(1, 6)
-
 #   list-compression implementation
 y = [ func_square(loop_x) for loop_x in x ]
 print(y)
-
-#   sequence-generator implementation
-y = list( func_square(loop_x) for loop_x in x )
+#   sequence-generator implementation (note, the inner set of '()' are redundent)
+y = list( ( func_square(loop_x) for loop_x in x ) )
 print(y)
-
 #   map implementation, returns an iterator object, from which we create a list 
 y = list(map(func_square, x))
 print(y)
-
 #   map implementation with lambda
 y = list(map(lambda loop_x: loop_x ** 2, x))
 print(y)
@@ -105,7 +104,6 @@ def rotate_chr(c, rot_by):
     return chr(rotated_pos - len(alphabet))
 
 #   itertools.repeat    utility for passing constants to map function
-import itertools
 secret_msg = "antidisestablishmentarianism"
 enc_msg = "".join(map(rotate_chr, secret_msg, itertools.repeat(3)))
 print(enc_msg)
@@ -114,7 +112,6 @@ print(dec_msg)
 print()
 
 #   Factorials
-import math
 numbers = list(range(0, 8))
 numbers_fact = list(map(math.factorial, numbers))
 print(numbers_fact)
@@ -129,12 +126,51 @@ print(celsius_temps)
 print()
 
 
-#   Continue: 2021-02-08T23:30:40AEDT filter() 
-#   filter(<func>, <iterable>[, <...>])
+#   filter(<func>, <iterable>)
+#       loops over items of input iterable(s) and returns an iterator containing those items of the input for which the function is True
 
+#   get positive numbers in list
+is_positive = lambda x: x > 0
+numbers = list(range(-5,10))
+print(numbers)
+numbers_positive = list(filter(is_positive, numbers))
+print(numbers_positive)
+print()
 
 #   Continue: 2021-02-08T23:33:29AEDT reduce()
-#   reduce(<...>)
+#   reduce(function, iterable))
+#       applies function to all items in iterable and add to produce final value. function must accept two arguments and return a value
+
+#   sum numbers [0,10]
+values = range(0, 11)
+values_sum = functools.reduce(operator.add, values)
+print(values_sum)
+values_sum = sum(values)
+print(values_sum)
+print()
+
+#   itertools.starmap
+#   starmap is (roughtly) equivelent to
+#   def starmap(function, iterable):
+#       for args in iterable:
+#           yield function(*args)
+from itertools import starmap
+list_a = (2, 7)
+list_b = (4, 3)
+list_c = list(starmap(pow, [list_a, list_b]))
+print(list_c)
+#   note the swapped lists
+list_a = (2, 4)
+list_b = (7, 3)
+list_c = list(map(pow, list_a, list_b))
+print(list_c)
+
+#   Generating a list with map
+#       list(map(function, iterable))
+#   Generating a list with a list comprehension
+#       [function(x) for x in iterable]
+#   Genrating a generator expresssion
+#       (function(x) for x in iterable)
 
 
 #   }}}1
