@@ -240,7 +240,7 @@ print()
 
 #   Continue: 2021-02-10T23:27:17AEDT deck of cards with examples, 
 ranks = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2']
-suits = ['H', 'D', 'C', 'S']
+suits = ['♥', '♦', '♣', '♠']
 
 #   cards as a generator function
 def cards():
@@ -388,9 +388,8 @@ for key, grp in grouped_data:
 print()
 
 
-
-
-#   Continue: 2021-02-11T18:16:09AEDT Relay teams from swimming data example
+#   Swiming teams problem
+#   Each stroke should have an 'A' and a 'B' relay team with four swimmers each. The 'A' team should contain the four swimmers with the best times for the stroke and the 'B' team the swimmers with the next four best times.
 path_swimmingdata = "data/swimmers.csv"
 
 class Event(namedtuple('Event', ['stroke', 'name', 'time'])):
