@@ -6,6 +6,10 @@ import itertools
 import operator
 import random
 import functools
+from collections import namedtuple
+import csv
+import datetime
+import statistics
 #   {{{2
 #   LINK: https://realpython.com/python-itertools/
 #   LINK: https://docs.python.org/3.6/library/itertools.html#itertools-recipes
@@ -334,9 +338,6 @@ print()
 
 
 #   S&P500 Analysis
-from collections import namedtuple
-import csv
-from datetime import datetime
 class DataPoint(namedtuple('DataPoint', ['date', 'value'])):
     __slots__ = ()
     def __le__(self, other):
@@ -346,7 +347,7 @@ class DataPoint(namedtuple('DataPoint', ['date', 'value'])):
     def __gt__(self, other):
         return self.value > other.value
 
-def read_prices(csv_file, _strptime=datetime.strptime):
+def read_prices(csv_file, _strptime=datetime.datetime.strptime):
     with open(csv_file) as infile:
         reader = csv.DictReader(infile)
         for row in reader:
@@ -386,8 +387,61 @@ for key, grp in grouped_data:
     print('{}: {}'.format(key, list(grp)))
 print()
 
+
+
+
 #   Continue: 2021-02-11T18:16:09AEDT Relay teams from swimming data example
 path_swimmingdata = "data/swimmers.csv"
+
+class Event(namedtuple('Event', ['stroke', 'name', 'time'])):
+    __slots__ = ()
+    def __lt__(self, other):
+        return self.time < other.time
+
+def read_events(csvfile, _strptime=datetime.datetime.strptime):
+    def _median(times):
+        return statistics.median((_strptime(time, '%M:%S:%f').time() for time in row['Times']))
+    fieldnames = ['Event', 'Name', 'Stroke']
+    with open(csvfile) as infile:
+        #   restkey is the field which data fields not specified are added to
+        reader = csv.DictReader(infile, fieldnames=fieldnames, restkey='Times')
+        next(reader)  # skip header
+        for row in reader:
+            yield Event(row['Stroke'], row['Name'], _median(row['Times']))
+
+def sort_and_group(iterable, key=None):
+    """Group sorted `iterable` on `key`."""
+    return itertools.groupby(sorted(iterable, key=key), key=key)
+
+def grouper(iterable, n, fillvalue=None):
+    iters = [iter(iterable)] * n
+    return itertools.zip_longest(*iters, fillvalue=fillvalue)
+
+events = tuple(read_events(path_swimmingdata))
+print("len(events)=(%s)" % len(events))
+print("events[0]=(%s)" % str(events[0]))
+
+#   Group the events by stroke.
+#   For each stroke:
+#   Group its events by swimmer name and determine the best time for each swimmer.
+#   Order the swimmers by best time.
+#   The first four swimmers make the 'A' team for the stroke, and the next four swimmers make the 'B' team.
+results_teams = []
+for stroke, events in sort_and_group(events, key=lambda event: event.stroke):
+    print("stroke=(%s), len(events)=(%s)" % (str(stroke), len(str(events))))
+    events_by_name = sort_and_group(events, key=lambda event: event.name)
+    best_times = (min(event) for _, event in events_by_name)
+    sorted_by_time = sorted(best_times, key=lambda event: event.time)
+    loop_team_members = itertools.islice(grouper(sorted_by_time, 4), 2)
+    teams = zip(('A', 'B'), loop_team_members)
+    results_teams.append(teams)
+
+for teams in results_teams:
+    for team, swimmers in teams:
+        loop_names = ', '.join(swimmer.name for swimmer in swimmers)
+        loop_output = '{stroke} {team}: {names}'.format(stroke=stroke.capitalize(), team=team, names=loop_names)
+        print(loop_output)
+print()
 
 
 #   }}}1
