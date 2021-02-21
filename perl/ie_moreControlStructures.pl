@@ -111,7 +111,7 @@ for( $a = 10; $a < 20; $a = $a + 1 ){
 }
 print "\n";
 
-@list = (2, 20, 30, 40, 50);
+my @list = (2, 20, 30, 40, 50);
 # foreach loop execution
 foreach $a (@list) {
 	print "value of a: $a\n"; 
