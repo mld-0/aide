@@ -168,7 +168,7 @@ printf $format, qw(Name Shirt Hat Position);
 foreach my $crewmember (@crew) {
 	printf $format, @$crewmember{qw(name shirt hat position)};
 }
-
+print "\n";
 
 #		Once we start using references and passing them around, we have to ensure that we know which sort of reference we have. If we try to use the reference as a type that it is not, our program will blow up
 
@@ -185,5 +185,67 @@ sub show_hash {
 	}
 }
 
+
+#	A symbolic reference is just a string that happens to name something in a package symbol table.
+
+#	Perl arrays and hashes are internally one-dimensional. That is, their elements can hold only scalar values (strings, numbers, and refer- ences). When we use a phrase like “array of arrays”, we really mean “array of references to arrays”, just as when we say “hash of functions”, we really mean “hash of references to subroutines”
+#
+
+#	anonymous array composer
+#		You can create a reference to an anonymous array with square brackets
+my $arrayref = [1, 2, ["a", "b", "c", "d"]];
+
+#	anonymous hash composer
+my $bonnie = "someone-or-other";
+$hashref = {
+        "Adam"   => "Eve",
+        "Clyde"  => $bonnie,
+        "Antony" => "Cleo" . "patra",
+};
+
+#	hash of arrays
+my $table = {
+"john" => [ 47, "brown", 186 ],
+"mary" => [ 23, "hazel", 128 ],
+"bill" => [ 35, "blue",  157 ],
+};
+
+#	hash of hashes
+my $table = {
+"john" => { age    => 47,
+            eyes   => "brown",
+            weight => 186,
+          },
+"mary" => { age    => 23,
+            eyes   => "hazel",
+            weight => 128,
+          },
+"bill" => { age    => 35,
+            eyes   => "blue",
+            weight => 157,
+          },
+};
+
+#	Anonymous subroutine composer
+my $coderef = sub { print "Boink!\n" };  # Now &$coderef prints "Boink!"
+
+#	Object constructors
+
+#	Symbol table references
+$scalarref = *foo{SCALAR};  # Same as \$foo
+$arrayref  = *ARGV{ARRAY};  # Same as \@ARGV
+$hashref = *ENV{HASH};  # Same as \%ENV
+$coderef = *handler{CODE};  # Same as \&handler
+$globref = *foo{GLOB}  # Same as \*foo
+
+
+#	Continue: 2021-02-21T22:05:09AEDT Programming Perl, Ch8, topics:
+#	Using a variable name as a variable name
+#	Using a BLOCK as a variable name
+#	Using the arrow operator
+#	Using Object Methods
+#	Tricks with Hard References
+#	Closures
+#	Symbolic References
 
 #	}}}1
