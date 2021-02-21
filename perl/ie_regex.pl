@@ -84,12 +84,56 @@ if ("Hello there, neighbor" =~ /\s(\w+),/) {
 }
 print "\n";
 
-#	Substitution operator
+#	Match in list context
+#		When a pattern match (m//) is used in a list context, the return value is a list of the capture variables created in the match, or an empty list if the match failed
+$_ = "Hello there, neighbor!";
+my($first, $second, $third) = /(\S+) (\S+), (\S+)/; 
+print "$second is my $third\n";
+print "\n";
+
+#	Match with g modifier
+#		match at more than one place in a string. In this case, a pattern with a pair of parentheses will return a capture from each time it matches
+my $text = "Fred dropped a 5 ton granite block on Mr. Slate"; 
+my @words = ($text =~ /([a-z]+)/ig);
+print "Result: @words\n";
+print "\n";
+
+#	Reading a string into a hash with match
+#		Each time the pattern matches, it returns a pair of captures. Those pairs of values then become the key-value pairs in the newly-created hash.
+my $data = "Barney Rubble Fred Flintstone Wilma Flintstone"; 
+my %last_name = ($data =~ /(\w+)\s+(\w+)/g);
+print "last_name=(@{[ %last_name ]})\n";
+print "\n";
+
+#	Matching multiple lines
+#		Classic regular expressions were used to match just single lines of text. But since Perl can work with strings of any length, Perl’s patterns can match multiple lines of text as easily as single lines.
+$_ = "I'm much better\nthan Barney is\nat bowling,\nWilma.\n";
+print "Found 'wilma' at start of line\n" if /^wilma\b/im;
+print "\n";
+
+#	read an entire file into one variable,§ then add the file’s name as a prefix at the start of each line:
+#>%		open FILE, $filename or die "Can't open '$filename': $!";
+#>%		my $lines = join '', <FILE>; 
+#>%		$lines =~ s/^/$filename: /gm;
+
+#	s/// 	Substitution operator
 my $my_string = "The cat sat on the mat"; 
 print "$my_string\n";
 $my_string =~ s/cat/dog/;
 print "$my_string\n";
 print "\n";
+
+$_ = "fred flintstone"; 
+if (s/fred/wilma/) {
+	print "Successfully replaced fred with wilma!\n"; 
+}
+print "\n";
+
+#	Substitution alternative delimiters
+#>%			s/fred/barney/;
+#>%			s{fred}{barney}; 
+#>%			s[fred](barney); 
+#>%			s<fred>#barney#;
 
 #	Substitution modifiers
 #		i		case insensitive
@@ -99,11 +143,62 @@ print "\n";
 #		x		Allows whitespace in the expression for clarity
 #		g		Replace all occurences of the found expression
 #		e		Evaluate the replacement as a perl statement, and use the return value as replacement text
+#		r		Leave origional string alone and return modified copy
 #	Example options
 #>%		/k/aai  # only matches the ASCII K or k, not Kelvin sign 
 #>%		/k/aia  # the /a's don't need to be next to each other 
 #>%		/ss/aai  # only matches ASCII ss, SS, sS, Ss, not ß 
 #>%		/ff/aai  # only matches ASCII ff, FF, fF, Ff, not ff
+
+#	Nondestructive Substitutions
+use 5.014;
+my $original = 'Fred ate 1 rib'; 
+my $copy = $original;
+$copy =~ s/\d+ ribs?/10 ribs/;
+#	or
+(my $copy = $original) =~ s/\d+ ribs?/10 ribs/;
+#	or
+my $copy = $original =~ s/\d+ ribs?/10 ribs/r;
+print "origional=($original), copy=($copy)\n";
+print "\n";
+
+#	Case shifting
+#		The \U escape forces what follows to all uppercase
+#		the \L escape forces lowercase
+#		By default, these affect the rest of the (replacement) string, or you can turn off case shifting with \E
+#		When written in lowercase (\l and \u ), they affect only the next character
+#		You can even stack them up. Using \u with \L means “all lowercase, but capitalize the first letter”#
+$_ = "I saw Barney with Fred.";
+s/(fred|barney)/\U$1/gi; # $_ is now "I saw BARNEY with FRED."
+s/(fred|barney)/\L$1/gi; # $_ is now "I saw barney with fred."
+s/(\w+) with (\w+)/\U$2\E with $1/i; # $_ is now "I saw FRED with barney."
+s/(fred|barney)/\u$1/ig; # $_ is now "I saw FRED with Barney."
+s/(fred|barney)/\u\L$1/ig; # $_ is now "I saw Fred with Barney."
+print "$_\n";
+print "\n";
+#	As it happens, although we’re covering case shifting in relation to substitutions, these escape sequences are available in any double-quotish string:
+my $name = "babydoll";
+print "Hello, \L\u$name\E, would you like to play a game?\n";
+print "\n";
+
+#	split(/separator, $string)
+#		breaks up a string according to a pattern.
+my @fields = split /:/, "abc:def:g:h"; # gives ("abc", "def", "g", "h")
+my @fields = split /:/, "abc:def::g:h"; # gives ("abc", "def", "", "g", "h")
+my @fields = split /:/, ":::a:b:c:::"; # gives ("", "", "", "a", "b", "c")
+#	cleanup whitespace
+my $some_input = "This is a \t test.\n";
+my @args = split /\s+/, $some_input; # ("This", "is", "a", "test.")
+#	The default for split is to break up $_ on whitespace: 
+my @fields = split; # like split /\s+/, $_;
+
+#	$result = join($glue, @pieces)
+#		The join function doesn’t use patterns, but performs the opposite function of split: split breaks up a string into a number of pieces, and join glues together a bunch of pieces to make a single string.
+my $x = join ":", 4, 6, 8, 10, 12; # $x is "4:6:8:10:12"
+my @values = split /:/, $x; # @values is (4, 6, 8, 10, 12) 
+my $z = join "-", @values; # $z is "4-6-8-10-12"
+print "x=($x)\n";
+print "\n";
 
 #	Translation operator
 #		Replace all occurences of the characters in SEARCHLIST with the corresponding characters in REPLACEMENTLIST 
@@ -163,7 +258,7 @@ print "\n";
 #		\1 ... \9		n-th grouped subexpression
 #		\10				10th grouped subexpression if matched, otherwise octal representation of character code
 
-#	Non-greedyness
+#	Non-greedy quanitifiers
 #		??			0 or 1
 #		*?			0 or more
 #		+?			1 or more
@@ -291,7 +386,6 @@ print "\n";
 #			Alteration									a|b|c
 #			Atoms										a [abc] \d \1 \g{2}
 
-
 #	A pattern test program
 #>%		while (<>) { # take one input line at a time
 #>%			chomp;
@@ -306,5 +400,21 @@ print "\n";
 
 #	Continue: 2021-02-21T03:39:00AEDT Learning Perl Ch9 Processing Text with regex
 
+#	Continue: 2021-02-21T04:29:50AEDT in-place editing with substitution, -I .bak file, 
+
+#	Inplace editing from command line
+#>%		perl -p -i.bak -w -e 's/Randall/Randal/g' fred*.dat#
+#	which is equivelent to
+#>%		#!/usr/bin/perl -w
+#>%		$^I = ".bak";
+#>%		while (<>) { 
+#>%			s/Randall/Randal/g;
+#>%			print; 
+#>%		}
+
+
+#	$^I		backup file
+#		if set, creates a backup file when performing inplace editing
+#>%		$^I = ".bak"
 
 #	}}}1
