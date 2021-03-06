@@ -97,4 +97,11 @@ say "$ENV{PATH}";
 print "\n";
 
 
+#	Hash slices
+#>%		my @three_scores = ($score{"barney"}, $score{"fred"}, $score{"dino"});
+#	or
+#>%		my @three_scores = @score{ qw/ barney fred dino/ };
+
+
+
 #	}}}1

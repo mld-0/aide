@@ -232,11 +232,11 @@ my $coderef = sub { print "Boink!\n" };  # Now &$coderef prints "Boink!"
 #	Object constructors
 
 #	Symbol table references
-$scalarref = *foo{SCALAR};  # Same as \$foo
-$arrayref  = *ARGV{ARRAY};  # Same as \@ARGV
-$hashref = *ENV{HASH};  # Same as \%ENV
-$coderef = *handler{CODE};  # Same as \&handler
-$globref = *foo{GLOB}  # Same as \*foo
+#>%		$scalarref = *foo{SCALAR};  # Same as \$foo
+#>%		$arrayref  = *ARGV{ARRAY};  # Same as \@ARGV
+#>%		$hashref = *ENV{HASH};  # Same as \%ENV
+#>%		$coderef = *handler{CODE};  # Same as \&handler
+#>%		$globref = *foo{GLOB}  # Same as \*foo
 
 
 #	Continue: 2021-02-21T22:05:09AEDT Programming Perl, Ch8, topics:

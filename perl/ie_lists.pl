@@ -278,4 +278,69 @@ print "\n";
 #>%		chomp(@lines = <STDIN>);
 
 
+#	Format numerical output for money
+sub big_money {
+	my $number = sprintf "%.2f", shift @_;
+	# Add one comma each time through the do-nothing loop 1 while $number =~ s/^(-?\d+)(\d\d\d)/$1,$2/;
+	# Put the dollar sign in the right place
+	$number =~ s/^(-?)/$1\$/;
+	$number;
+}
+
+#	grep()
+#		Get odd numbers between 1..1000
+my @odd_numbers = grep { $_ % 2 } 1..1000;
+#		Get only lines containing 'fred' from file fh
+#>%		my @matching_lines = grep { /\bfred\b/i } <$fh>;
+
+
+#	map()
+my @data = (4.75, 1.5, 2, 1234, 6.9456, 12345678.9, 29.95);
+my @formatted_data = map { big_money($_) } @data;
+
+
+#	Other list utilities
+#	first()
+use List::Util qw(first);
+my @characters = qw( Abc Def pebble Pebbles );
+my $first_match = first { /\bPebbles\b/i } @characters;
+print "first_match=($first_match)\n";
+
+#	sum()
+use List::Util qw(sum);
+my $total = sum( 1..1000 ); # 500500
+print "total=($total)\n";
+
+#	max()
+use List::Util qw(max);
+my $max = max( 3, 5, 10, 4, 6 );
+print "max=($max)\n";
+
+#	maxstr()
+use List::Util qw(maxstr);
+my $max = maxstr( @characters);
+print "max=($max)\n";
+
+#	shuffle()
+use List::Util qw(shuffle);
+my @shuffled = shuffle(1..10); # randomized order of elements
+print "shuffled=(@shuffled)\n";
+
+#	natatime() 		N at a time
+use List::MoreUtils qw(natatime);
+my $iterator = natatime 3, @array;
+while( my @triad = $iterator->() ) {
+	print "Got @triad\n";
+}
+print "\n";
+
+#	mesh()
+#		
+#>%		use List::MoreUtils qw(mesh);
+#>%		my @abc = 'a' .. 'z';
+#>%		my @numbers = 1 .. 20;
+#>%		my @dinosaurs = qw( dino );
+#>%		my @large_array = mesh @abc, @numbers, @dinosaurs;
+#>%		print "large_array=(@large_array)\n";
+
 
