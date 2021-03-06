@@ -4,6 +4,7 @@
 #   }}}1
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import pytz
 #   {{{2
 #   See: OReilly Python for Data Analysis Ch11
@@ -92,8 +93,8 @@ print(var_ts['2011-01-06':'2011-01-11'])
 print(var_ts['2011-01-06':])
 print()
 
-#   truncate()
-#       slices a Series between two dates
+#   truncate(before=None, after=None, axis=None, copy=True)
+#       Truncate a Series or DataFrame before and after some index value. Slices a Series between two dates
 print(var_ts.truncate(after='2011-09-01'))
 print()
 
@@ -128,6 +129,11 @@ print(var_ts.resample('D'))
 print()
 
 
+#   date_range(start=None, end=None, periods=None, freq=None, tz=None, normalize=False, name=None, closed=None, **kwargs)
+#           Return a fixed frequency DatetimeIndex
+#                   normalize           If True, Normalize start/end dates to midnight
+#                   closed              None, left, right
+
 #   Generating Date Ranges
 index = pd.date_range('2012-04-01', '2012-06-01')
 index = pd.date_range(start='2012-04-01', periods=20)
@@ -147,8 +153,9 @@ rng = pd.date_range('2012-01-01', '2012-09-01', freq='WOM-3FRI')  # 3rd Friday o
 print(rng)
 print()
 
-#   Shifting (Leading and Lagging) data
-#       When shifting, missing data is introduced either at the start or the end of the time series
+#   shift(periods=1, freq=None, axis=0, fill_value=np.nan)
+#       Shift index (with data) by desired number of periods with an optional time freq.  
+#       (Leading and Lagging) data When shifting, missing data is introduced either at the start or the end of the time series
 ts = pd.Series(np.random.randn(4), index=pd.date_range('1/1/2000', periods=4, freq='M'))
 print(ts.shift(0))
 print(ts.shift(2))
@@ -193,10 +200,17 @@ ts = pd.Series(np.random.randn(len(rng)), index=rng)
 #   Date ranges can be generated with a timezone set
 pd.date_range('3/9/2012 9:30', periods=10, freq='D', tz='UTC')
 
-#   tz_localize()   Conversion from naive to localized is handled by the 
+#   Series.tz_localize(tz, axis=0, level=None, copy=True, ambigious='raise', nonexistance='raise')   
+#       Localize tz-naive index of a Series or DataFrame to target time zone.
+#               tz          str or tzinfo
+#               axis        axis to localize
+#               level       if axis is a multiindex, specify level, otherwise None
 ts_utc = ts.tz_localize('UTC')
 print(ts_utc)
-#   tz_convert()    Conversion from one timezone to another can be performed with 
+
+#   Series.tz_convert(tz)    
+#       Conversion from one timezone to another 
+#               tz          str, pytz.timezone, dateutil.tz.tzfile, or None
 ts_eastern = ts_utc.tz_convert('America/New_York')  # note the handling of DST 
 print(ts_eastern)
 print()
@@ -207,7 +221,7 @@ print()
 
 
 
-#   Periods and period arithmetic
+#   Periods and Period Arithmetic
 #       Periods represent timespans, like days, months, quarters, or years.
 p = pd.Period(2007, freq='A-DEC')  # timespan from 2007-01-01 to 2007-12-31
 print(p)
@@ -217,7 +231,8 @@ print(p - 2)
 #   If two periods have the same frequency, their difference is the number of units between them
 print(pd.Period('2014', freq='A-DEC') - p)
 
-#   period_range()  Regular ranges of periods can be constructed with the function
+#   period_range(start=None, end=None, periods=None, freq=None, name=None)
+#       Return a fixed frequency PeriodIndex. The day (calendar) is the default frequency.
 rng = pd.period_range('2000-01-01', '2000-06-30', freq='M')
 print(rng)
 
@@ -256,6 +271,7 @@ print(ts.asfreq('M', how='start'))
 p = pd.Period('2012Q4', freq='Q-JAN')
 print(p.asfreq('D', 'start'))
 print(p.asfreq('D', 'end'))
+
 #   Period arithmatic
 #       4pm on second last buisness day of the quarter
 p4pm = (p.asfreq('B', 'end') - 1).asfreq('T', 'start') + 16*60
@@ -269,8 +285,12 @@ print(ts)
 print()
 
 #   Timestamp to Period conversion
-#       to_timestamp(how='end')
-#       to_period('M')
+#   
+#   df.to_timestamp(freq=None, how='start', axis=0, copy=True)
+#       Cast to DatetimeIndex of timestamps, at beginning of period.
+
+#   Series.to_period(freq)
+#      Cast to PeriodArray/Index at a particular frequency. Converts DatetimeArray/Index to PeriodArray/Index. 
 rng = pd.date_range('2000-01-01', periods=3, freq='M')
 ts = pd.Series(np.random.randn(3), index=rng)
 print(ts)
@@ -292,7 +312,7 @@ print()
 #>%     index = pd.PeriodIndex(year=data.year, quarter=data.quarter, freq='Q-DEC')
 #>%     data.index = index
 
-#   resample(rule, axis=0, closed=None, label=None, convention='start', kind=None, loffset=None, base=None, on=None, level=None, origin='start_day', offset=None)
+#   df.resample(rule, axis=0, closed=None, label=None, convention='start', kind=None, loffset=None, base=None, on=None, level=None, origin='start_day', offset=None)
 #       Resample time-series data. Convenience method for frequency conversion and resampling of time series. Object must have a datetime-like index (DatetimeIndex, PeriodIndex, or TimedeltaIndex), or pass datetime-like values to the on or level keyword.
 
 #   Resampling and frequency conversion
@@ -347,12 +367,85 @@ print()
 
 
 #   Moving Window Functions
+#       An important class of array transformations used for time series operations are statis‐ tics and other functions evaluated over a sliding window or with exponentially decay‐ ing weights. This can be useful for smoothing noisy or gappy data. 
 close_px_all = pd.read_csv('data/stock_px_2.csv', parse_dates=True, index_col=0)
 close_px = close_px_all[['AAPL', 'MSFT', 'XOM']]
 close_px = close_px.resample('B').ffill()
 print(close_px.AAPL.rolling(250).mean())
 print(close_px.AAPL.rolling(250).std())
-#   Continue: 2021-02-26T16:39:46AEDT moving window functions
+print()
+
+#   df.rolling(window, min_periods=None, center=False, win_type=None, on=None, axis=0, closed=None)
+#           Provide rolling window calculations.
+
+#   The expression rolling(250) is similar in behavior to groupby, but instead of group‐ ing it creates an object that enables grouping over a 250-day sliding window.
+close_px.AAPL.plot()
+close_px.AAPL.rolling(250).mean().plot()
+plt.show()
+
+appl_std250 = close_px.AAPL.rolling(250, min_periods=10).std()
+appl_std250.plot()
+plt.show()
+
+#   df.expanding(min_periods=1, centre=None, axis=0)
+#       Provide expanding transformations. The expanding mean starts the time window from the beginning of the time series and increases the size of the window until it encompasses the whole series.
+
+expanding_mean = appl_std250.expanding().mean()
+close_px.rolling(60).mean().plot(logy=True)
+plt.show()
+
+#   The rolling function also accepts a string indicating a fixed-size time offset rather than a set number of periods. Using this notation can be useful for irregular time series
+print(close_px.rolling('20D').mean())
+print()
+
+
+#   Expodentially Weighted Functions
+#       An alternative to using a static window size with equally weighted observations is to specify a constant decay factor to give more weight to more recent observations.
+
+#   df.ewm(com=None, span=None, halflife=None, alpha=None, min_periods=0, adjust=True, ignore_na=False, axis=0, times=None)
+#       Provide exponential weighted (EW) functions
+
+#   comparing a 60-day moving average of Apple’s stock price with an EW moving average with span=60
+aapl_px = close_px.AAPL['2006':'2007']
+ma60 = aapl_px.rolling(30, min_periods=20).mean()
+ewma60 = aapl_px.ewm(span=30).mean()
+ma60.plot(style='k--', label='Simple MA')
+ewma60.plot(style='k-', label='EW MA')
+plt.legend()
+plt.show()
+
+#   Binary Moving Window Functions
+#       Some statistical operators, like correlation and covariance, need to operate on two time series.
+
+#   To have a look at this, we first compute the percent change for all of our time series of interest
+spx_px = close_px_all['SPX']
+spx_rets = spx_px.pct_change()
+returns = close_px.pct_change()
+
+#   df.corr(method='person', min_periods=1)
+#       Compute pairwise correlation of columns, excluding NA/null values.
+
+#   The corr aggregation function after we call rolling can then compute the rolling correlation with spx_rets
+corr = returns['AAPL'].rolling(125, min_periods=100).corr(spx_rets)
+corr.plot()
+plt.show()
+
+#   Suppose you wanted to compute the correlation of the S&P 500 index with many stocks at once.
+corr = returns.rolling(125, min_periods=100).corr(spx_rets)
+corr.plot()
+plt.show()
+
+
+#   User-Defined Moving Window Functions
+#       The apply method on rolling and related methods provides a means to apply an array function of your own devising over a moving window. The only requirement is that the function produce a single value (a reduction) from each piece of the array.
+
+#   For example, while we can compute sample quantiles using rolling(...).quan tile(q), we might be interested in the percentile rank of a particular value over the sample.
+from scipy.stats import percentileofscore
+score_at_2percent = lambda x: percentileofscore(x, 0.02)
+result = returns.AAPL.rolling(250).apply(score_at_2percent)
+result.plot()
+plt.show()
+
 
 
 #   }}}1

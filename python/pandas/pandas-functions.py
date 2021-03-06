@@ -51,6 +51,11 @@
 #       mul, rmul               multiplication (*)
 #       pow, rpow               exponentation (**)
 
+#   shift(periods=1, freq=None, axis=0, fill_value=np.nan)
+#       Shift index (with data) by desired number of periods with an optional time freq.  
+#       (Leading and Lagging) data When shifting, missing data is introduced either at the start or the end of the time series
+#>%             ts_percentshift = ts / ts.shift(1) - 1
+
 #   df.reindex() 
 #       Conform Series/DataFrame to new index with optional filling logic
 #               index           new sequence to use as index
@@ -73,7 +78,11 @@
 #           kwds            additional keywords to pass to func
 
 #   df.sort_index()
+
 #   df.sort_values()
+
+#   df.rolling(window, min_periods=None, center=False, win_type=None, on=None, axis=0, closed=None)
+#           Provide rolling window calculations.
 
 
 #   df.rank(axis=0, method='average', numeric_only=None, na_option='keep', ascending=True, pct=False)
@@ -83,9 +92,9 @@
 
 
 #   data.unstack(level=-1, fill_value=None)
+#       Pivot a level of the (necessarily hierarchical) index labels
 #       Returns a DataFrame having a new level of column labels whose inner-most level consists of the pivoted index labels.
 #       If the index is not a MultiIndex, the output will be a Series (the analogue of stack when the columns are not a MultiIndex)
-#       Pivot a level of the (necessarily hierarchical) index labels
 #       rearrange data into a DataFrame
 #               level       level(s) of index to unstack, can pass level name (default=-1, last level)
 #               fill_value  replace NaN with value if unstack produces missing values
@@ -101,7 +110,6 @@
 
 #   df.swaplevel(,i, j, axis)     
 #       Takes two level numbers or names and returns a new object with the levels interchanged, that is, Swap levels i and j in a MultiIndex on a particular axis.
-
 
 
 #   merge(left, right[, how='inner', left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate])
@@ -164,6 +172,7 @@
 #                                   for categorical groupers.
 
 
+
 #   groupby methods
 #           count               Number of non-NA values in group
 #           sum                 Sum of non-NA values
@@ -173,6 +182,32 @@
 #           min, max            minimum and maximum non-NA values
 #           prod                product of non-NA values
 #           first, last         first and last non-NA values
+
+
+#   DateTime Related:
+
+#   date_range(start=None, end=None, periods=None, freq=None, tz=None, normalize=False, name=None, closed=None, **kwargs)
+#           Return a fixed frequency DatetimeIndex
+#                   normalize           If True, Normalize start/end dates to midnight
+#                   closed              None, left, right
+
+#   Series.tz_localize(tz, axis=0, level=None, copy=True, ambigious='raise', nonexistance='raise')   
+#       Localize tz-naive index of a Series or DataFrame to target time zone.
+#               tz          str or tzinfo
+#               axis        axis to localize
+#               level       if axis is a multiindex, specify level, otherwise None
+
+#   Series.tz_convert(tz)    
+#       Conversion from one timezone to another 
+#               tz          str, pytz.timezone, dateutil.tz.tzfile, or None
+
+
+#   df.to_timestamp(freq=None, how='start', axis=0, copy=True)
+#       Cast to DatetimeIndex of timestamps, at beginning of period.
+
+#   Series.to_period(freq)
+#      Cast to PeriodArray/Index at a particular frequency. Converts DatetimeArray/Index to PeriodArray/Index. 
+
 
 
 
