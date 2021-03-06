@@ -324,16 +324,17 @@ print()
 #   Group-Wise Linear Regression
 #       you can use groupby to perform more complex group-wise statistical analysis, as long as the function returns a pandas object or scalar value.
 #       using the statsmodels econometrics library
-import statsmodels.api as sm
-def regress(data, yvar, xvars):
-    Y = data[yvar]
-    X = data[xvars]
-    X['intercept'] = 1.0
-    result = sm.OLS(Y, X).fit()
-    return result.params
-result = by_year.apply(regress, 'AAPL', ['SPX'])
-print(result)
-print()
+
+#>%     import statsmodels.api as sm
+#>%     def regress(data, yvar, xvars):
+#>%         Y = data[yvar]
+#>%         X = data[xvars]
+#>%         X['intercept'] = 1.0
+#>%         result = sm.OLS(Y, X).fit()
+#>%         return result.params
+#>%     result = by_year.apply(regress, 'AAPL', ['SPX'])
+#>%     print(result)
+#>%     print()
 
 
 #   Pivot Tables and Cross-Tabulation

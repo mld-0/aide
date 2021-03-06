@@ -292,6 +292,8 @@ print()
 #>%     index = pd.PeriodIndex(year=data.year, quarter=data.quarter, freq='Q-DEC')
 #>%     data.index = index
 
+#   resample(rule, axis=0, closed=None, label=None, convention='start', kind=None, loffset=None, base=None, on=None, level=None, origin='start_day', offset=None)
+#       Resample time-series data. Convenience method for frequency conversion and resampling of time series. Object must have a datetime-like index (DatetimeIndex, PeriodIndex, or TimedeltaIndex), or pass datetime-like values to the on or level keyword.
 
 #   Resampling and frequency conversion
 #       Resampling refers to the process of converting a time series from one frequency to another. Aggregating higher frequency data to lower frequency is called downsam‐ pling, while converting lower frequency to higher frequency is called upsampling.

@@ -24,13 +24,23 @@ print()
 
 #   Hierarchical indexing plays an important role in reshaping data and group-based operations like forming a pivot table
 
-#   data.unstack()
+#   data.unstack(level=-1, fill_value=None)
+#       Returns a DataFrame having a new level of column labels whose inner-most level consists of the pivoted index labels.
+#       If the index is not a MultiIndex, the output will be a Series (the analogue of stack when the columns are not a MultiIndex)
+#       Pivot a level of the (necessarily hierarchical) index labels
 #       rearrange data into a DataFrame
+#               level       level(s) of index to unstack, can pass level name (default=-1, last level)
+#               fill_value  replace NaN with value if unstack produces missing values
 print(data.unstack())
 print()
 
-#   data.stack()
-#       inverse of unstack()
+#   data.stack(level=-1, dropna=True)
+#       inverse of unstack()    
+#       Stack the prescribed level(s) from columns to index.
+#       Return a reshaped DataFrame or Series having a multi-level index with one or more new inner-most levels compared to the current DataFrame. The new inner-most levels are created by pivoting the columns of the current dataframe
+#               level           Level(s) to stack from the column axis onto the index axis, defined as one index or label, 
+#                               or a list of indices or labels
+#               dropna          whether to drop rows in resulting Frame/Series with missing values
 print(data.unstack().stack())
 print()
 

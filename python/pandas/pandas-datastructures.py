@@ -208,15 +208,16 @@ states = ['Texas', 'Utah', 'California']
 print(frame.reindex(columns=states))
 print()
 
-#   reindex arguments
-#       index           new sequence to use as index
-#       method          interpolation (fill) method, 'ffill' fills forward, 'bfill' fills backwards
-#       fill_value      substitute value to use for introduced missing data
-#       limit           when forward or back filling, maximum size gap (number of elements) to fill
-#       tolerance       when forward or back filling, maximum size gap for indexact matches
-#       level           Match simple Index on level of MultiIndex; otherwise select subset of.
-#       copy            If True, always copy underlying data even if new index is equivalant to old index, 
-#                       if False, do not copy the data when the indexes are independent
+#   df.reindex() 
+#       Conform Series/DataFrame to new index with optional filling logic
+#               index           new sequence to use as index
+#               method          interpolation (fill) method, 'ffill' fills forward, 'bfill' fills backwards
+#               fill_value      substitute value to use for introduced missing data
+#               limit           when forward or back filling, maximum size gap (number of elements) to fill
+#               tolerance       when forward or back filling, maximum size gap for indexact matches
+#               level           Match simple Index on level of MultiIndex; otherwise select subset of.
+#               copy            If True, always copy underlying data even if new index is equivalant to old index, 
+#                               if False, do not copy the data when the indexes are independent
 
 
 #   Dropping Entries from an Axis
@@ -358,7 +359,15 @@ print()
 frame = pd.DataFrame(np.random.randn(4, 3), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
 print(np.abs(frame))
 
-#   apply()     Apply a function along an axis of the DataFrame
+#   apply(func, axis=0, raw=False, result_type=None, args=(), **kwds)
+#       Apply a function along an axis of the DataFrame
+#           func            function to apply to each row
+#           axis            axis along which function is applied (0=col, 1=row)
+#           raw             True: pass function ndarray, False: pass function Series
+#           result_type     (only axis=1) expand: turn list result into columns, 
+#                           reduce: return Series, broadcast: retain origional index and column
+#           args            position arguments to pass to func
+#           kwds            additional keywords to pass to func
 f = lambda x: x.max() - x.min()
 print(frame.apply(f))  # apply to each row
 print(frame.apply(f, axis='columns'))  # apply to each column
@@ -397,6 +406,12 @@ frame = pd.DataFrame({'b': [4, 7, -3, 2], 'a': [0, 1, 0, 1]})
 print(frame.sort_values(by='b'))
 print(frame.sort_values(by=['a', 'b']))  # pass a list of names to sort by multiple columns
 print()
+
+#   df.rank(axis=0, method='average', numeric_only=None, na_option='keep', ascending=True, pct=False)
+#           Compute numerical data ranks (1 through n) along axis. By default, equal values are assigned a rank that is the average of the ranks of those values
+#                   axis            0=rows, 1=cols
+#                   method          average, min, max, first, dense
+
 
 #   Ranking assigns ranks from one through the number of valid data points in an array.
 #       by default rank breaks ties by assigning each group the mean rank
