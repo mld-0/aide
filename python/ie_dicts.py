@@ -130,5 +130,37 @@ d1.update({'b': 200, 'd': 400})
 d1.update([('b', 200), ('d', 400)])
 d1.update(b=200, d=400)
 print(d1)
+print()
+
+
+#   Merging dictionaries
+a = {1:'peanut', 2:'butter', 3:'jelly', 4:'time'}
+b = {1:'fish', 2:'chips'}
+c = {1: ['peanut','butter','jelly','time'], 2:['fish','chips']}
+d = {1: ['fish','chips'], 2:['peanut','butter','jelly','time']}
+
+#   default behaviour keeps last seen value for duplicate keys
+print(a | b)  # python 3.9+
+print({**a, **b})
+x = a.copy(); x.update(b); print(x);
+
+#   ChainMap requires dicts be in opposite order to other methods for the same behaviour
+from collections import ChainMap
+x = dict(ChainMap({}, b, a)); print(x);
+
+print()
+
+
+#   Merge c and d, appending values for duplicate keys
+e = { **c }
+for k, v in e.items():
+    if k in e:
+        e[k].extend(v)
+    else:
+        e[k] = v
+print(e)
+print()    
+
+
 
 #   }}}1
