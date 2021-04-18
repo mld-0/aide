@@ -106,6 +106,8 @@ print(issubclass(str, object))
 
 
 
+#   Methods of an object
+print([x for x in dir(str) if callable(getattr(str, x))])
 
 
 #   }}}1
