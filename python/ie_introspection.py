@@ -97,4 +97,15 @@ print()
 #   __name__
 
 
+#   Get Parent classes of class
+import inspect
+print(inspect.getmro(object))
+print(inspect.getmro(str))
+print(isinstance(str, object))
+print(issubclass(str, object))
+
+
+
+
+
 #   }}}1
