@@ -14,6 +14,7 @@ LIBS = -lm
 #>%			[command1
 #>%			command2
 #>%			...]
+#	More general rules typically come first
 
 
 #	Automatic Variables
