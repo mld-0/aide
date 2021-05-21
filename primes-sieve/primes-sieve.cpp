@@ -130,21 +130,22 @@ int main()
 {
     auto passes = 0;
     prime_sieve* sieve = nullptr;
-    //auto tStart = std::chrono::steady_clock::now();
-    //while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tStart).count() < 10)
-    //{
+    auto tStart = std::chrono::steady_clock::now();
+    while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tStart).count() < 10)
+    {
 	delete sieve;
 	sieve = new prime_sieve(1000000);
 	sieve->runSieve();
 	int result_count = sieve->countPrimes();
-	printf("%i\n", result_count);
-        //passes++;
-    //}
-    //auto tD = std::chrono::steady_clock::now() - tStart;
-    //
-    //if (sieve)
-    //{
-    //    sieve->printResults(false, std::chrono::duration_cast<std::chrono::microseconds>(tD).count() / 1000000, passes);
-    //    delete sieve;
-    //}
+	//printf("%i\n", result_count);
+        passes++;
+    }
+    auto tD = std::chrono::steady_clock::now() - tStart;
+    
+    if (sieve)
+    {
+        sieve->printResults(false, std::chrono::duration_cast<std::chrono::microseconds>(tD).count() / 1000000, passes);
+        delete sieve;
+    }
 }
+
