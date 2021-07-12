@@ -11,19 +11,34 @@ no warnings 'shadow';
 #	substitute			s///
 #	transliterate 		tr///
 
-#	=~ 	Binding operator	
-#		m/match/  is equivelent to  $_ ~= m/match/
-#	associates the string on the LHS with the regex match, 
+#	Binding operator =~
+#		m/match/  
+#	is equivelent to  
+#		$_ =~ m/match/
+#	When used with match, the string on the LHS is compared with the regex match. In a scalar context, true/false is returned, in a list context, all matches are returned if the 'g' modifier is used
 #	!~ inverts the match
 #	Returns a boolean in a sclar context, or the matches of any grouped expressions in a list context
 
 #	Match 
-my $bar = "This is foo and again foo"; 
-if ($bar =~ /foo/){
+my $bar = "This is food and again fool"; 
+if ($bar =~ /foo\w/){
 	print "First time is matching\n";
 } else {
 	print "First time is not matching\n"; 
 }
+
+#	With multiple matches for the named capture group, the last is stored
+my @result = $bar =~ m/(?<group_foo>foo\w)/g;
+print "result=(@result)\n";
+print "group_foo=($+{group_foo})\n";
+#	or
+my @result;
+push(@result, $&) while ($bar =~ /(?<group_foo>foo\w)/g);
+print "result=(@result)\n";
+while ( (my $k, my $v) = each %+) {
+	print "k=($k), v=($v)\n";
+}
+
 
 $_ = "foo";
 if (/foo/){
@@ -205,8 +220,9 @@ print "\n";
 #			 tr/SEARCHLIST/REPLACEMENTLIST/cds
 #			 y/SEARCHLIST/REPLACEMENTLIST/cds
 my $string = 'The cat sat on the mat'; 
+print "string=($string)\n";
 $string =~ tr/a/o/;
-print "$string\n";
+print "string=($string)\n";
 
 #	Character ranges can also be used
 $string =~ tr/a-z/A-Z/;
@@ -251,19 +267,30 @@ print "\n";
 #		^ or \A			match beginning of string
 #		$ or \Z 		match end of string (before newline)
 #		\z				end of string
+#		\b{}			match at unicode boundry of specified type
+#		\B{}			Match where corresponding \b{} doesn't match
 #		\b				word bountry when outside brackets, backspace (0x08) inside brackets
 #		\B				non word boundry
+#		\G				match only after 'pos' position of previous match
 #		\n				newline
 #		\t				tab
 #		\1 ... \9		n-th grouped subexpression
 #		\10				10th grouped subexpression if matched, otherwise octal representation of character code
-
 #	Non-greedy quanitifiers
 #		??			0 or 1
 #		*?			0 or more
 #		+?			1 or more
 #		{m,n}?		specific number
 
+
+#	Using \G (previous match position) assertion
+my $string = "The time is: 12:31:02 on 4/12/00";
+$string =~ /:\s+/g;
+(my $time) = ($string =~ /\G(\d+:\d+:\d+)/);
+$string =~ /.+\s+/g;
+(my $date) = ($string =~ m{\G(\d+/\d+/\d+)});
+print "time=($time), date=($date)\n";
+print "\n";
 
 #	Perl variable names
 #>%		[a-zA-Z0-9_]
@@ -353,6 +380,8 @@ print "\n";
 
 
 #	Named capture groups
+#		(?<name>)
+#		$+{name}
 my $names = 'Fred or Barney';
 if ( $names =~ m/(?<name1>\w+) (?:and|or) (?<name2>\w+)/ ) {
 	say "I saw $+{name1} and $+{name2}"; 

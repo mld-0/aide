@@ -44,6 +44,10 @@ use feature qw(say);
 #	@ARGV	Invocation Arguments
 #		array containing invocation arguments for script.
 
+#	<<>>
+#	Double Diamond
+#		as per <>, but prevent pipe open if | character is encountered
+
 
 #	Output to standard output
 #		The print operator takes a list of values and sends each item (as a string, of course) to standard output in turn, one after another.

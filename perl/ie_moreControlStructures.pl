@@ -249,4 +249,17 @@ print "\n";
 
 
 
+#	Conditional Operator
+#		expression ? if_true_expr : if_false_expr
+
+#	Logical And
+#		&&
+
+#	Logical Or
+#		||
+
+#	Defined Or
+#		//
+#	short circuits when it finds a defined value
+
 

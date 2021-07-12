@@ -21,13 +21,17 @@ sub sum_of_fred_and_barney {
 	$fred + $barney;  # That's the return value 
 }
 
+#	The '&' infront of a function call is optional, but serves to specify that this is a function call
+#	it also allows calling of subroutines which share names which builtin subroutines
 
 #	Calling a subroutine (with arguments)
 my $n = &max(10, 15); # This sub call has two parameters
 print "n=($n)\n";
 print "\n";
 
-#	@_		arguments array
+
+#	@_		
+#	arguments array
 #		unrelated to $_ variable
 #		private to (this invocation of the) subroutine, stored upon calling further subroutine and restored upon return
 #			$_[0], first argument
@@ -79,6 +83,11 @@ my $results = &which_element_is("dino", @names);
 print "names=(@names), results=($results)\n";
 print "\n";
 
+#	wantarray()
+#		returns true if caller is looking for a list value, or false for a scalar.
+#		usage:
+#>%			return wantarray ? @a : "@a";
+
 #	Omitting the Ampersand '&' on function calls
 #		If the compiler sees the subroutine definition before invocation, or if Perl can tell from the syntax that it’s a subroutine call, the subroutine can be called without an ampersand, just like a built-in function.
 #		This means that if Perl can see that it’s a subroutine call without the ampersand, from the syntax alone, that’s generally fine. That is, if you’ve got the parameter list in parentheses, it’s got to be a function call
@@ -125,6 +134,13 @@ print "\n";
 #	state list cant be initalised from list context
 #>%		state @array = qw(a b c);  # error
 
+
+#	Continue: 2021-03-12T22:39:57AEDT Subroutine signatures
+use feature qw(signatures);
+no warnings qw(experimental::signatures);
+sub max2( $m, $n ) {
+	if ($m > $n) { $m } else { $n }
+}
 
 
 #	}}}1

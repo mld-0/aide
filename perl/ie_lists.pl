@@ -7,6 +7,9 @@ use warnings;
 no warnings 'shadow';
 use feature qw(say);
 
+#	Requires:
+#>%		List::MoreUtils
+
 #	Each assignment in perl is either in a scalar or list context
 
 my @fred = ();
@@ -21,6 +24,12 @@ say "@fred";
 #	Output field seperator (for unquoted lists)
 $, = ",";
 say @fred;
+print "\n";
+
+#	Enumerate list: each()
+while (my ($i, $v) = each @fred) {
+	say "i=($i), v=($v)";
+}
 print "\n";
 
 $, = " ";
@@ -48,6 +57,8 @@ print "\n";
 say (1..10);
 print "\n";
 
+#	Range operator doesn't count backwards, that is, the expression (5..1) returns an empty list
+
 #	List literals
 #		 list literal (the way you represent a list value within your program) is a list of comma- separated values enclosed in parentheses. These values form the elements of the list.
 
@@ -61,14 +72,14 @@ my @var = ("fred", "barney", "betty", "wilma", "dino");  # list of strings
 #	qw() 	single quote-words
 #		Each item seperated by whitespace is added to list as a single-quoted value
 #		Any character may be used as opening closing
-my @var = qw(fred, barney, betty, wilma, dino);  # list of strings
-my @var = qw<fred, barney, betty, wilma, dino>;  # list of strings
+my @var = qw(fred barney betty wilma dino);  # list of strings
+my @var = qw<fred barney betty wilma dino>;  # list of strings
 say @var;
 
 #	qq()	double-quote words
 #		As per qw(), but using double quotes
-my @var = qq(fred, barney, betty, wilma, dino);  # list of strings
-my @var = qq<fred, barney, betty, wilma, dino>;  # list of strings
+my @var = qq(fred barney betty wilma dino);  # list of strings
+my @var = qq<fred barney betty wilma dino>;  # list of strings
 say @var;
 print "\n";
 
@@ -167,7 +178,7 @@ say @removed;
 print "\n";
 
 #	Interpolate array into string
-$" = " ";
+$" = " ";  # list seperator, defaults to space
 my @rocks = qw{ flintstone slate rubble };
 print "rocks=(@rocks)\n";
 #	A single element of an array interpolates into its value
@@ -178,6 +189,8 @@ print "\n";
 
 
 #	foreach loop
+#		if you modify the control variable inside the loop, you modify the element itself
+
 #		using default $_
 foreach (qw/ bedrock slate lava/) {
 	print "\$_=($_)\n";
@@ -213,8 +226,16 @@ say @numbers_num;
 print "\n";
 
 
+#	each()
+#		Every time that you call each on an array, it returns two values for the next element in the array: the index of the value, and the value itself.
+@rocks = qw/ bedrock slate rubble granite /;
+while (my ($index, $value) = each(@rocks)) {
+	print "index=($index), value=($value)\n";
+}
+print "\n";
+
 #	Scalar and List contexts
-#		a fundamental aspect of perl, a given expression maybean different things depending on context
+#		a fundamental aspect of perl, a given expression may mean different things depending on context
 my @people = qw( fred barney betty );
 #	in list context, a list is a list of elements
 my @sorted = sort(@people);  # list context
@@ -247,13 +268,13 @@ my $people_len = @people;
 
 #	Scalar producing expressions in list context
 #		If an expression doesn't have a list value, the scalar value is converted into a single-element list
-my @fred = 6 * 7; # gets the one-element list
+my @fred = 6 * 7;  # gets the one-element list
 
 #	scalar()	Forcing scalar context
 @rocks = qw( talc quartz jade obsidian );
 print "How many rocks do you have?\n";  
 print "I have ", scalar @rocks, " rocks!\n";  # Correct, gives a number
-print "I have ", @rocks, " rocks!\n";  # WRONG, prints names of rocks i
+print "I have ", @rocks, " rocks!\n";  # WRONG, prints names of rocks 
 print "\n";
 
 
@@ -261,6 +282,7 @@ print "\n";
 #		$#array + 1 
 #	or
 #		scalar @array
+
 #	@{[ ... ]}		Embed perl expression in string
 print "len(rocks)=(@{[ scalar @rocks ]})\n";
 #	$#array 		Index of last element (len(array) - 1)
@@ -290,6 +312,8 @@ sub big_money {
 #	grep()
 #		Get odd numbers between 1..1000
 my @odd_numbers = grep { $_ % 2 } 1..1000;
+#	or
+#my @odd_numbers = grep( $_ % 2, 1..1000);
 #		Get only lines containing 'fred' from file fh
 #>%		my @matching_lines = grep { /\bfred\b/i } <$fh>;
 

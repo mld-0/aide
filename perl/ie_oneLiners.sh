@@ -86,6 +86,7 @@ cd "$mld_data/example"
 #		$^N			text match by group most recently closed
 #		$*			set to 0 for single line strings, non-zero for multiline matching
 #		$&			last pattern match
+#		$+			The text matched by the highest used capture group of the last successful search pattern.
 #		$'			string following last match
 #		$`			string preceding last match
 #		$=			page length
