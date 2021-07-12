@@ -382,8 +382,13 @@ data = [{'name': 'Alan', 'age': 34},
         {'name': 'Catherine', 'age': 34},
         {'name': 'Betsy', 'age': 29},
         {'name': 'David', 'age': 33}]
+#grouped_data = itertools.groupby(data, key=lambda x: x['age'])
+data = sorted(data, key=lambda x: x['age'])
 grouped_data = itertools.groupby(data, key=lambda x: x['age'])
 for key, grp in grouped_data:
+    #print(type(grp))
+    #print(list(grp))
+    #print(grp)
     print('{}: {}'.format(key, list(grp)))
 print()
 
