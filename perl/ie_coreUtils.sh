@@ -64,6 +64,15 @@ printf "\n"
 printf "%s\n%s\n%s\n" "${str_input[@]}" | perl -wne "/$str_regex/ and print $&"
 printf "\n"
 
+#	Common lines from multiple files
+#>%		grep -Fxf <files>
+#>%		perl -ne 'if(!$#ARGV){$h{$_}=1; next} print if exists $h{$_}' <files>
+
+#	Lines from second file not present in first
+#>%		grep -vFxf <files>
+#>%		perl -ne 'if(!$#ARGV){$h{$_}=1; next} print if !exists $h{$_}' <files>
+
+
 #	}}}
 
 #	Perl as Sed:

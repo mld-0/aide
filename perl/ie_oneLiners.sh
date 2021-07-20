@@ -36,6 +36,9 @@ cd "$mld_data/example"
 #		$,			output field seperator (delimitor between elements of unquoted list)
 #		$"			output list seperator (delimitor between elements of quoted list)
 
+#	Provide variable
+#		perl -sE 'say $myvar' -- -myvar="abc"
+
 #	(Other) command line options:
 #	{{{
 #		-F//		alt syntax for linewise split
