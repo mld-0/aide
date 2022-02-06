@@ -1,0 +1,96 @@
+VIM SETTINGS: {{{3
+vim: set tabstop=4 modeline modelines=10 foldmethod=marker:
+vim: set foldlevel=2 foldcolumn=2:
+}}}1
+{{{2
+LINK: https://www.cplusplus.com/articles/Gw6AC542/
+(Basically), header files are '#included' and not compiled, whereas source files are compiled and not '#included'
+
+There is nothing wrong with including header files, (provided one follows two precautions)
+1) Only include things one needs to include
+
+2) Guard against multiple includes with include guards:
+	#ifndef __X_H_INCLUDED
+	#define __X_H_INCLUDED
+	class X{};
+	#endif
+...	always guard ones headers 	*(how old is this?)
+
+3) (what about '#pragma once' (and be done with such primative BS))
+
+There are two types of dependency:
+	1) stuff that can be forward declared
+	2) stuff that must be included
+
+Suppose class A uses class B, (B is one of A's dependencies). 
+Whether it can should be forward declared or included:
+	Do nothing if: 			A makes no reference at all to B
+							The only reference to class B is to declare it a friend
+
+	Forward declare B if:	A contains a pointer or reference to B
+							One or more functions has a B object/pointer/reference as parameter/return-type 
+
+	Include B if:			B is a parent class of A
+							A contains a B object
+
+Prefer doing nothing, then forward declaring, then including (but don't forward declare the standard library). This helps prevent many circular dependencies
+
+
+Inline functions:
+The issue with inline functions is that their body needs to exist in every cpp file which calls them (since inline functions cannot be linked, they must be added during compilation)
+<One solution is to declare inline function in header and define it in source, only a forward declaration is needed for the header (since we are looking to not import anything), <(and we are free to import the defintion in the source)>> 
+(the keyword 'inline' is used in the definition and not the declaration)
+Ongoing: 2022-02-07T03:33:41AEDT not a clear example? (it's actually all one source? with an unseemly include just before the end) (again with the age of this material?)
+{{{
+	// b.h  (assume its guarded)
+	//------------------
+	class A;  // forward declared dependency
+	//------------------
+	class B
+	{
+	public:
+	  void Func(const A& a);  // okay, A is forward declared
+	};
+	//------------------
+	#include "a.h"        // A is now an include dependency
+	inline void B::Func(const A& a)
+	{
+	  a.DoSomething();    // okay!  a.h has been included
+	}
+}}}
+Alternatively, move the inline function definition to its own header
+(Seperating the interface from the implementation while still allowing the implementation to be inlined) (this new header is impored ... at the end of the header containing the class (containing the inline function))
+
+
+Forward declaring templates:
+Consider:
+a.h:
+	#include "b.h"
+	template<typename T>
+	class Tem {
+		B b;
+	};
+	typedef Tem<int> A;
+b.h:
+	//	incorrectly attempt to forward declare A
+	//class A;	//	error, A is a template specialization, not a class
+	//	correct way:
+	template<typename T> class Tem;
+	typedef Tem<int> A;
+A better solution: alternative headers with forward declarations:
+a.h:
+	#include "b.h"
+	template<typename T>
+	class Tem {
+	B b;
+	};
+a_fwd.h:
+	template<typename T> class Tem;
+	typedef Tem<int> A;
+This allows A to be used <(as a pointer, reference, or function parameter)> by including a header without requiring the entire class definition. (It is important to keep forward headers and the corresponding definition headers <synchronized>)
+
+
+
+LLVM symbol table dumper: nm
+<(Use on object files)>
+e
