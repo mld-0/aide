@@ -20,6 +20,7 @@ cd "$mld_data/example"
 
 #	Command line options:
 #		-e 'script'		execute given perl code 
+#		-E 'script'		execute given perl code, (enables features (such as 'say'))
 #		-l<octnum>		end-of-line processing, (set $\ to octnum?, or to $/ if not given)
 #		-p				printing loop around command
 #		-n				nonprinting loop around command
