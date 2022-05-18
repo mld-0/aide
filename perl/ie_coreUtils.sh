@@ -28,7 +28,7 @@
 #		-p wraps the expression inside a while loop, placing each input line into $_, evaluate the expression which manipulates $_, and prints $_, the result.
 #	}}}
 
-#	Equivelent Statements: matching 'pattern'
+#	Equivalent Statements: matching 'pattern'
 #	egrep awk, sed, perl
 #	{{{
 #>%			cat | egrep 'pattern'
@@ -40,7 +40,7 @@
 #	}}}
 
 #	Perl as Grep:
-#	Equivelent
+#	Equivalent
 #>%			grep <regex>
 #>%			perl -wne 'print if /<regex>/'
 #>%			perl -wne '/<regex>/ and print'
@@ -88,7 +88,7 @@ printf "\n"
 
 
 #	Perl as Awk:
-#	Equivelent:
+#	Equivalent:
 #>%			cat /etc/passwd | awk -F: '{ print $1 }'
 #>%			cat /etc/passwd | perl -F: -lane 'print @F[0]'
 #	{{{
@@ -106,7 +106,7 @@ printf "\n"
 cat "$mld_data/data.csv" | perl -F, -lane 'print @F[0,3,4]'
 printf "\n"
 
-#	Ongoing: 2020-11-11T20:39:59AEDT (how to) set output seperator for when using this method?
+#	Ongoing: 2020-11-11T20:39:59AEDT (how to) set output separator for when using this method?
 #	Get columns 0 through 4 (0-indexed) from csv
 cat "$mld_data/data.csv" | perl -F, -lane 'print @F[0..4]'
 printf "\n"
@@ -118,5 +118,12 @@ printf "\n"
 #			git log --date=short --pretty=format:%ad | sort | uniq -c | perl -lane 'print $F[1]'
 
 
-#	}}}1
+#	Using perl-as-grep in bash if-statement
+if echo "2022-05-18" | perl -wne '/^\d\d\d\d-\d\d-\d\d$/ or exit 1'; then 
+	echo "match"; 
+fi 
+#	perl is moderately but not significantly slower than grep in this role
+
+
+
 
