@@ -112,5 +112,11 @@ cat "$mld_data/data.csv" | perl -F, -lane 'print @F[0..4]'
 printf "\n"
 #	}}}
 
+
+#	Print columns of 'uniq -c':
+#			git log --date=short --pretty=format:%ad | sort | uniq -c | perl -lane 'print $F[0]'
+#			git log --date=short --pretty=format:%ad | sort | uniq -c | perl -lane 'print $F[1]'
+
+
 #	}}}1
 
